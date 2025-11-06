@@ -229,7 +229,7 @@ void Chip8Screen::Reset()
 	sound_timer = 0;
 
 	std::string path = getExecutablePath().parent_path().string() + "/media/roms/" + m_transitionData + ".ch8";
-	std::ifstream input(path);
+	std::ifstream input(path, std::ios::binary);
 
 	std::cout << "ROM path - " << path << std::endl;
 
@@ -713,7 +713,7 @@ void SelectScreen::Init()
 {
 	m_chip8 = static_cast<Chip8Engine*>(m_engine);
 
-	m_rom_path = getExecutablePath().parent_path() / m_rom_path;
+	m_rom_path = getExecutablePath().parent_path().string() + m_rom_path;
 	if (std::filesystem::exists(m_rom_path))
 	{
 		for (const auto& entry : std::filesystem::directory_iterator(m_rom_path))
