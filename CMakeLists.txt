@@ -13,6 +13,9 @@ if(APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks")
 	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 	add_executable(chip8 MACOSX_BUNDLE ${MY_SOURCES})
+elseif(UNIX)
+  set(CMAKE_INSTALL_RPATH "$ORIGIN/.")
+  add_executable(chip8 ${MY_SOURCES})
 else()
 	add_executable(chip8 ${MY_SOURCES})
 endif()
@@ -41,6 +44,15 @@ elseif(APPLE)
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different
 				"${DLL}"
 				$<TARGET_FILE_DIR:chip8>/../Frameworks
+		)
+	endforeach()
+elseif(UNIX)
+	file(GLOB EXTRA_DLLS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/AGE/lib/linux/*.so")
+	foreach(DLL ${EXTRA_DLLS})
+		add_custom_command(TARGET chip8 POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different
+				"${DLL}"
+				$<TARGET_FILE_DIR:chip8>
 		)
 	endforeach()
 endif()

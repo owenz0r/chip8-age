@@ -9,6 +9,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -38,7 +39,7 @@ static unsigned char REG[16];
 static unsigned int PEND = 0xFFFF;
 static std::vector<unsigned int> stack;
 
-static bool pause = false;
+static bool do_pause = false;
 static int count = 0;
 
 #ifdef DEBUG
@@ -103,9 +104,9 @@ void Chip8Screen::Reset()
 {
 	m_initialized = false;
 
-	memset(display, 0, sizeof(int) * display_size);
-	memset(memory, 0, memory_size);
-	memset(keys, 0, 16);
+  memset(display, 0, sizeof(int) * display_size);
+  memset(memory, 0, memory_size);
+  memset(keys, 0, 16);
 
 	PC = program_address;
 	I = 0x0000;
@@ -254,7 +255,7 @@ void Chip8Screen::Reset()
 
 void Chip8Screen::Update(const double dt)
 {
-	if (pause)
+	if (do_pause)
 		return;
 
 	if (PC >= PEND)
@@ -278,7 +279,7 @@ void Chip8Screen::Update(const double dt)
 				if (n4 == 0x0)
 				{
 					DEBUG_LOG("Clear Screen");
-					memset(display, 0, sizeof(int) * display_size);
+          memset(display, 0, sizeof(int) * display_size);
 					break;
 				}
 				else if (n4 == 0xE)
@@ -739,4 +740,6 @@ void SelectScreen::Init()
 								  }});
 	m_input->m_keydownmap.insert(
 		{SDLK_RETURN, [&]() -> void { m_chip8->Transition("chip8", m_rom_names[m_selected]); }});
+
+  m_initialized = true;
 }

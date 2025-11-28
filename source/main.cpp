@@ -1,8 +1,8 @@
+#include <iostream>
 #include "Chip8Engine.h"
 #include "Chip8Screen.h"
 #include "core/globals.h"
 
-#include <iostream>
 
 int main(int, char**)
 {
@@ -17,6 +17,7 @@ int main(int, char**)
 		engine.AddScreen("chip8", &chip8);
 
 		engine.SetActiveScreen("select");
+
 		engine.Run();
 	}
 	else
