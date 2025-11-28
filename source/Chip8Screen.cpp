@@ -96,7 +96,6 @@ void Chip8Screen::Init()
 
 	srand(time(0));
 
-	std::cout << "Chip8Screen init complete" << std::endl;
 	Reset();
 }
 
@@ -232,7 +231,6 @@ void Chip8Screen::Reset()
 	std::string path = getExecutablePath().parent_path().string() + "/media/roms/" + m_transitionData + ".ch8";
 	std::ifstream input(path, std::ios::binary);
 
-	std::cout << "ROM path - " << path << std::endl;
 
 	// Breakout [Carmelo Cortez, 1979].ch8
 
