@@ -3,6 +3,8 @@
 #include "core/Screen.h"
 #include <vector>
 
+static const std::string ROM_PATH = "/Roms/";
+
 class Chip8Engine;
 
 class Chip8Screen : public age::Screen
@@ -26,7 +28,7 @@ class SelectScreen : public age::Screen
 	int m_selected = 0;
 	int m_num_roms = 0;
 	std::vector<std::string> m_rom_names;
-	std::string m_rom_path = "/media/roms";
+	std::string m_rom_path;
 	void Draw() override;
 	void Init() override;
 };

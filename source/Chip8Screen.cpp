@@ -8,8 +8,8 @@
 #include "core/Utils.h"
 
 #include <cstdlib>
-#include <ctime>
 #include <cstring>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -103,9 +103,9 @@ void Chip8Screen::Reset()
 {
 	m_initialized = false;
 
-  memset(display, 0, sizeof(int) * display_size);
-  memset(memory, 0, memory_size);
-  memset(keys, 0, 16);
+	memset(display, 0, sizeof(int) * display_size);
+	memset(memory, 0, memory_size);
+	memset(keys, 0, 16);
 
 	PC = program_address;
 	I = 0x0000;
@@ -228,9 +228,12 @@ void Chip8Screen::Reset()
 	delay_timer = 0;
 	sound_timer = 0;
 
-	std::string path = getExecutablePath().parent_path().string() + "/media/roms/" + m_transitionData + ".ch8";
+#if defined(__APPLE__)
+	std::string path = getResourcesPath() + ROM_PATH + m_transitionData + ".ch8";
+#else
+	std::string path = getExecutablePath().parent_path().string() + "/Resources/Roms/" + m_transitionData + ".ch8";
+#endif
 	std::ifstream input(path, std::ios::binary);
-
 
 	// Breakout [Carmelo Cortez, 1979].ch8
 
@@ -247,7 +250,7 @@ void Chip8Screen::Reset()
 	}
 	else
 	{
-		std::cout << "No ROM found..." << std::endl;
+		std::cout << "No ROM found - " << path << std::endl;
 	}
 }
 
@@ -277,7 +280,7 @@ void Chip8Screen::Update(const double dt)
 				if (n4 == 0x0)
 				{
 					DEBUG_LOG("Clear Screen");
-          memset(display, 0, sizeof(int) * display_size);
+					memset(display, 0, sizeof(int) * display_size);
 					break;
 				}
 				else if (n4 == 0xE)
@@ -637,7 +640,7 @@ void Chip8Screen::Draw()
 					abort();
 			}
 
-			Rect r(i, j, 1, 1);
+			age::Rect r(i, j, 1, 1);
 			m_renderer->DrawQuad(r, c);
 		}
 	}
@@ -668,12 +671,12 @@ void SelectScreen::Draw()
 					abort();
 			}
 
-			Rect r(i, j, 1, 1);
+			age::Rect r(i, j, 1, 1);
 			m_renderer->DrawQuad(r, c);
 		}
 	}
 
-	Rect r(3, 3, 58, 26);
+	age::Rect r(3, 3, 58, 26);
 	m_renderer->DrawQuad(r, Color::Red());
 
 	TextParams params;
@@ -699,7 +702,7 @@ void SelectScreen::Draw()
 			m_renderer->DrawText(params);
 			if (count == m_selected)
 			{
-				r = Rect(5.25, y + 0.25, 0.5f, 0.5f);
+				r = age::Rect(5.25, y + 0.25, 0.5f, 0.5f);
 				m_renderer->DrawQuad(r, Color::Yellow());
 			}
 			count++;
@@ -712,7 +715,13 @@ void SelectScreen::Init()
 {
 	m_chip8 = static_cast<Chip8Engine*>(m_engine);
 
-	m_rom_path = getExecutablePath().parent_path().string() + m_rom_path;
+#if defined(__APPLE__)
+	m_rom_path = getResourcesPath() + ROM_PATH;
+#else
+	m_rom_path = getExecutablePath().parent_path().string() + ROM_PATH;
+#endif
+
+	std::cout << "Rom Path: " << m_rom_path << std::endl;
 	if (std::filesystem::exists(m_rom_path))
 	{
 		for (const auto& entry : std::filesystem::directory_iterator(m_rom_path))
@@ -739,5 +748,5 @@ void SelectScreen::Init()
 	m_input->m_keydownmap.insert(
 		{SDLK_RETURN, [&]() -> void { m_chip8->Transition("chip8", m_rom_names[m_selected]); }});
 
-  m_initialized = true;
+	m_initialized = true;
 }
