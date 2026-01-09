@@ -228,11 +228,8 @@ void Chip8Screen::Reset()
 	delay_timer = 0;
 	sound_timer = 0;
 
-#if defined(__APPLE__)
-	std::string path = getResourcesPath() + ROM_PATH + m_transitionData + ".ch8";
-#else
-	std::string path = getExecutablePath().parent_path().string() + "/Resources/Roms/" + m_transitionData + ".ch8";
-#endif
+	std::string path = (getResourcesPath() / ROM_PATH / m_transitionData).string() + ".ch8";
+
 	std::ifstream input(path, std::ios::binary);
 
 	// Breakout [Carmelo Cortez, 1979].ch8
@@ -714,12 +711,7 @@ void SelectScreen::Draw()
 void SelectScreen::Init()
 {
 	m_chip8 = static_cast<Chip8Engine*>(m_engine);
-
-#if defined(__APPLE__)
-	m_rom_path = getResourcesPath() + ROM_PATH;
-#else
-	m_rom_path = getExecutablePath().parent_path().string() + ROM_PATH;
-#endif
+	m_rom_path = (getResourcesPath() / ROM_PATH).string();
 
 	std::cout << "Rom Path: " << m_rom_path << std::endl;
 	if (std::filesystem::exists(m_rom_path))

@@ -3,7 +3,7 @@
 #include "core/Screen.h"
 #include <vector>
 
-static const std::string ROM_PATH = "/Roms/";
+static const std::string ROM_PATH = "Roms";
 
 class Chip8Engine;
 
